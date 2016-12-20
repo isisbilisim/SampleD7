@@ -4,17 +4,37 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, XMLDoc, XMLIntf, EInvoiceEasy, SOAPHttpClient, Types, InvokeRegistry;
+  Dialogs, StdCtrls, XMLDoc, XMLIntf, SOAPHttpClient, Types, InvokeRegistry,
+  ComCtrls, SOAPHTTPTrans, WinInet, Rio;
 
 type
   TForm1 = class(TForm)
-    Button1: TButton;    
+    Button1: TButton;
     Button2: TButton;
     OpenDialog1: TOpenDialog;
     txtETTN: TEdit;
     Label1: TLabel;
+    PageControl1: TPageControl;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    TabSheet3: TTabSheet;
+    txtVKN: TEdit;
+    Label2: TLabel;
+    txtUser: TEdit;
+    Label3: TLabel;
+    Label4: TLabel;
+    txtPass: TEdit;
+    TabSheet4: TTabSheet;
+    Button3: TButton;
+    Edit1: TEdit;
+    Label5: TLabel;
+    Memo1: TMemo;
+    Button4: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure HTTPRIOHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp; Data: Pointer);    
   private
     { Private declarations }
   public
@@ -31,6 +51,8 @@ const
   NS_cac = 'urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2';
 
 implementation
+
+uses TaxPayerQuery, EInvoiceEasy;
 
 {$R *.dfm}
 
@@ -134,7 +156,77 @@ begin
        MessageDlg(E.Message, mtError, [mbOk], 0);
      on E : Exception do
        MessageDlg(E.Message, mtError, [mbOk], 0);
-  end;  
+  end;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+ var
+   Service: IEasy;
+   HTTPRIO1: THTTPRIO;
+
+   Response: ArrayOfstring;
+   i: integer;
+begin
+  Memo1.Lines.Clear();
+
+  HTTPRIO1 := THTTPRIO.Create(Form1);
+
+  Service := GetIEasy(false,'http://erptestep.isisbilisim.com.tr/EInvoiceEasy.svc', HTTPRIO1);
+  try
+    Response := Service.GetPostboxList(Edit1.Text);
+    for i := Low(Response) to High(Response) do
+    begin
+      Memo1.Lines.Add(Response[i])
+    end;
+  Except
+     //özel entegratörden gelen hata mesajý
+     on E : ERemotableException do
+       MessageDlg(E.Message, mtError, [mbOk], 0);
+     on E : Exception do
+       MessageDlg(E.Message, mtError, [mbOk], 0);
+  end;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+ var
+   Service: ITaxPayerQuery;
+   HTTPRIO1: THTTPRIO;
+
+   Response: ArrayOfUser;
+   i: integer;
+begin
+  Memo1.Lines.Clear();
+
+  HTTPRIO1 := THTTPRIO.Create(Form1);
+  HTTPRIO1.HTTPWebNode.OnBeforePost := HTTPRIOHTTPWebNode1BeforePost;
+
+  Service := GetITaxPayerQuery(false,'http://musteritestws.isisbilisim.com.tr/services/TaxPayerQuery.svc', HTTPRIO1);
+  try
+    Response := Service.GetActiveList();
+    Memo1.Lines.Add(Format('Bulunan kayýt sayýsý: %d', [Length(Response)]));
+    for i := Low(Response) to High(Response) do
+    begin
+      Memo1.Lines.Add(Response[i].Identifier + ' ' + Response[i].Alias + ' ' + Response[i].Title)
+    end;
+  Except
+     //özel entegratörden gelen hata mesajý
+     on E : ERemotableException do
+       MessageDlg(E.Message, mtError, [mbOk], 0);
+     on E : Exception do
+       MessageDlg(E.Message, mtError, [mbOk], 0);
+  end;
+end;
+
+procedure TForm1.HTTPRIOHTTPWebNode1BeforePost(const HTTPReqResp: THTTPReqResp; Data: Pointer);
+const
+  INTERNET_OPTION_HTTP_DECODING = 65;
+  contentEncodingHeader = 'Accept-Encoding: gzip, deflate';
+var
+  Flag: LongBool;
+begin
+  Flag := True;
+  HttpAddRequestHeaders(Data, PChar(contentEncodingHeader), Length(contentEncodingHeader), HTTP_ADDREQ_FLAG_ADD);
+  InternetSetOption(Data, INTERNET_OPTION_HTTP_DECODING, PChar(@Flag), SizeOf(Flag));
 end;
 
 end.
