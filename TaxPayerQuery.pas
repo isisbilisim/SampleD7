@@ -8,7 +8,7 @@
 //  >Import : http://musteritestws.isisbilisim.com.tr/services/TaxPayerQuery.svc?singleWsdl:3
 // Encoding : utf-8
 // Version  : 1.0
-// (12/20/2016 8:05:10 PM - - $Rev: 10138 $)
+// (12/21/2016 5:42:29 PM - - $Rev: 10138 $)
 // ************************************************************************ //
 
 unit TaxPayerQuery;

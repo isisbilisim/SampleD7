@@ -193,6 +193,7 @@ procedure TForm1.Button4Click(Sender: TObject);
    HTTPRIO1: THTTPRIO;
 
    Response: ArrayOfUser;
+   Request: TaxPayerQuery.ArrayOfstring;
    i: integer;
 begin
   Memo1.Lines.Clear();
@@ -204,7 +205,7 @@ begin
   try
     Response := Service.GetActiveList();
     Memo1.Lines.Add(Format('Bulunan kayýt sayýsý: %d', [Length(Response)]));
-    for i := Low(Response) to High(Response) do
+    for i := Low(Response) to High(Response)  do
     begin
       Memo1.Lines.Add(Response[i].Identifier + ' ' + Response[i].Alias + ' ' + Response[i].Title)
     end;
