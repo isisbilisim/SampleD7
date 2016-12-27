@@ -1,6 +1,9 @@
 # SampleD7
 Örnek uygulama
 
+####UBL-TR Dokümanları
+http://www.efatura.gov.tr/dosyalar/kilavuzlar/UBLTR_1.2.1_Kilavuzlar.zip
+
 Delphi 7'de servis için client yaratacağınızda wsdlimp.exe uygulamasının güncel halini kullanınız: http://cc.embarcadero.com/item/24535
 
 ## Class düzgün oluşmuyor, aşağıdaki değişiklikler gerekiyor:
