@@ -1,9 +1,9 @@
 # SampleD7
-Örnek uygulama
-
-####UBL-TR Dokümanları
+Delphi 7 örnek uygulama
+####UBL-TR dokümanları
 http://www.efatura.gov.tr/dosyalar/kilavuzlar/UBLTR_1.2.1_Kilavuzlar.zip
-
+####UBL-TR şema/şematron kontrol
+http://mkysoft.com/ubltr/
 #Uyarılar
 Delphi 7'de servis için client yaratacağınızda wsdlimp.exe uygulamasının güncel halini kullanınız: http://cc.embarcadero.com/item/24535
 
